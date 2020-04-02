@@ -32,9 +32,10 @@ const http = require("http");
 // app.use(bodyParser.urlencoded({ extended: true}));
 // app.use(bodyParser.json());
 
-app.get("/helsinki-events", function(req, res) {
+app.get("/helsinki-events/:language", function(req, res) {
+  var _lang = req.params.language;
   http
-    .get("http://open-api.myhelsinki.fi/v1/activities/", resp => {
+    .get("http://open-api.myhelsinki.fi/v1/activities/?languge_filter=" + _lang, resp => {
       let data = "";
       // A chunk of data has been recieved.
       resp.on("data", chunk => {
@@ -42,9 +43,19 @@ app.get("/helsinki-events", function(req, res) {
       });
       // The whole response has been received. Print out the result.
       resp.on("end", () => {
-        data = JSON.parse(data);
-        res.send(data);
-        res.end();
+        var _formattedData = JSON.parse(data);
+            _result = [];
+
+            _formattedData.data.forEach(function(eventInfo){
+              if(eventInfo.info_url !== null){
+                _result.push({
+                  event_name: eventInfo.name[_lang],
+                  event_url: eventInfo.info_url
+                });
+              }
+            });
+
+            res.send(_result);
       });
     })
     .on("error", err => {
@@ -53,101 +64,101 @@ app.get("/helsinki-events", function(req, res) {
     });
 });
 
-app.get("/helsinki-events/fi", function(req, res) {
-  http
-    .get(
-      "http://open-api.myhelsinki.fi/v1/activities/?language_filter=fi",
-      resp => {
-        let data = "";
-        // A chunk of data has been recieved.
-        resp.on("data", chunk => {
-          data += chunk;
-        });
-        // The whole response has been received. Print out the result.
-        resp.on("end", () => {
-          data = JSON.parse(data);
-          res.send(data);
-          res.end();
-        });
-      }
-    )
-    .on("error", err => {
-      console.log("Error: " + err.message);
-      res.end();
-    });
-});
+// app.get("/helsinki-events/fi", function(req, res) {
+//   http
+//     .get(
+//       "http://open-api.myhelsinki.fi/v1/activities/?language_filter=fi",
+//       resp => {
+//         let data = "";
+//         // A chunk of data has been recieved.
+//         resp.on("data", chunk => {
+//           data += chunk;
+//         });
+//         // The whole response has been received. Print out the result.
+//         resp.on("end", () => {
+//           data = JSON.parse(data);
+//           res.send(data);
+//           res.end();
+//         });
+//       }
+//     )
+//     .on("error", err => {
+//       console.log("Error: " + err.message);
+//       res.end();
+//     });
+// });
 
-app.get("/helsinki-events/en", function(req, res) {
-  http
-    .get(
-      "http://open-api.myhelsinki.fi/v1/activities/?language_filter=en",
-      resp => {
-        let data = "";
-        // A chunk of data has been recieved.
-        resp.on("data", chunk => {
-          data += chunk;
-        });
-        // The whole response has been received. Print out the result.
-        resp.on("end", () => {
-          data = JSON.parse(data);
-          res.send(data);
-          res.end();
-        });
-      }
-    )
-    .on("error", err => {
-      console.log("Error: " + err.message);
-      res.end();
-    });
-});
+// app.get("/helsinki-events/en", function(req, res) {
+//   http
+//     .get(
+//       "http://open-api.myhelsinki.fi/v1/activities/?language_filter=en",
+//       resp => {
+//         let data = "";
+//         // A chunk of data has been recieved.
+//         resp.on("data", chunk => {
+//           data += chunk;
+//         });
+//         // The whole response has been received. Print out the result.
+//         resp.on("end", () => {
+//           data = JSON.parse(data);
+//           res.send(data);
+//           res.end();
+//         });
+//       }
+//     )
+//     .on("error", err => {
+//       console.log("Error: " + err.message);
+//       res.end();
+//     });
+// });
 
-app.get("/helsinki-events/sv", function(req, res) {
-  http
-    .get(
-      "http://open-api.myhelsinki.fi/v1/activities/?language_filter=sv",
-      resp => {
-        let data = "";
-        // A chunk of data has been recieved.
-        resp.on("data", chunk => {
-          data += chunk;
-        });
-        // The whole response has been received. Print out the result.
-        resp.on("end", () => {
-          data = JSON.parse(data);
-          res.send(data);
-          res.end();
-        });
-      }
-    )
-    .on("error", err => {
-      console.log("Error: " + err.message);
-      res.end();
-    });
-});
+// app.get("/helsinki-events/sv", function(req, res) {
+//   http
+//     .get(
+//       "http://open-api.myhelsinki.fi/v1/activities/?language_filter=sv",
+//       resp => {
+//         let data = "";
+//         // A chunk of data has been recieved.
+//         resp.on("data", chunk => {
+//           data += chunk;
+//         });
+//         // The whole response has been received. Print out the result.
+//         resp.on("end", () => {
+//           data = JSON.parse(data);
+//           res.send(data);
+//           res.end();
+//         });
+//       }
+//     )
+//     .on("error", err => {
+//       console.log("Error: " + err.message);
+//       res.end();
+//     });
+// });
 
-app.get("/helsinki-events/zh", function(req, res) {
-  http
-    .get(
-      "http://open-api.myhelsinki.fi/v1/activities/?language_filter=zh",
-      resp => {
-        let data = "";
-        // A chunk of data has been recieved.
-        resp.on("data", chunk => {
-          data += chunk;
-        });
-        // The whole response has been received. Print out the result.
-        resp.on("end", () => {
-          data = JSON.parse(data);
-          res.send(data);
-          res.end();
-        });
-      }
-    )
-    .on("error", err => {
-      console.log("Error: " + err.message);
-      res.end();
-    });
-});
+// app.get("/helsinki-events/zh", function(req, res) {
+//   http
+//     .get(
+//       "http://open-api.myhelsinki.fi/v1/activities/?language_filter=zh",
+//       resp => {
+//         let data = "";
+//         // A chunk of data has been recieved.
+//         resp.on("data", chunk => {
+//           data += chunk;
+//         });
+//         // The whole response has been received. Print out the result.
+//         resp.on("end", () => {
+//           data = JSON.parse(data);
+//           res.send(data);
+//           res.end();
+//         });
+//       }
+//     )
+//     .on("error", err => {
+//       console.log("Error: " + err.message);
+//       res.end();
+//     });
+// });
 // app.get('/', function(req, res){
 
 //     res.sendFile(__dirname + '/views/index.html');
